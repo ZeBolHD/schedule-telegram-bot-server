@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TelegramUser {
+  id         String   @id @unique
+  first_name String?
+  username   String?
+  createdAt  DateTime @default(now())
+
+  userWithGroup        UserWithGroup[]
+  userWithSubscription UserWithSubscription[]
+
+  @@map("telegram_users")
+}
+
+model UserWithGroup {
+  userId  String
+  user    TelegramUser @relation(fields: [userId], references: [id])
+  groupId Int
+  group   Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@id([userId, groupId])
+  @@map("user_with_group")
+}
+
+model Group {
+  id        Int     @id @unique @default(autoincrement())
+  code      String  @unique
+  facultyId Int
+  faculty   Faculty @relation(fields: [facultyId], references: [id])
+  grade     Int     @default(1)
+  studyType Int     @default(0)
+  fileId    String?
+
+  userWithGroup UserWithGroup[]
+
+  @@map("groups")
+}
+
+model UserWithSubscription {
+  userId         String
+  user           TelegramUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptionId Int
+
+  @@id([userId, subscriptionId])
+  @@map("user_with_subscription")
+}
+
+model Faculty {
+  id     Int     @id @default(autoincrement())
+  name   String
+  groups Group[]
+
+  @@map("faculties")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  name           String   @unique
+  hashedPassword String
+  createdAt      DateTime @default(now())
+
+  @@map("users")
+}
