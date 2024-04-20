@@ -1,10 +1,11 @@
 import { Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { TelegrafModule } from "nestjs-telegraf";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { PrismaModule } from "./prisma/prisma.module";
-import { BotModule } from "./bot/bot.module";
+
+import { PrismaModule } from "@/prisma/prisma.module";
+import { BotModule } from "@/bot/bot.module";
+import { UserModule } from "@/user/user.module";
 
 @Module({
   imports: [
@@ -18,8 +19,8 @@ import { BotModule } from "./bot/bot.module";
       inject: [ConfigService],
     }),
     BotModule,
+    UserModule,
   ],
-  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

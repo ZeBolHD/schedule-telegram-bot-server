@@ -1,35 +1,43 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { Command, Sender, Update } from "nestjs-telegraf";
-import { TelegramMessageFromUser } from "./types";
+import { Sender, Start, Update } from "nestjs-telegraf";
+import { TelegramMessageSender } from "./types";
 import { BotService } from "./bot/bot.service";
+import { UserService } from "./user/user.service";
+
+import * as locale from "@/assets/locale.json";
 
 @Injectable()
 @Update()
 export class AppService {
-  private _token: string;
   private readonly logger = new Logger(AppService.name);
 
   constructor(
-    private readonly config: ConfigService,
     private readonly botService: BotService,
-  ) {
-    this._token = config.get<string>("BOT_TOKEN");
-    botService.sendMessage();
-  }
+    private readonly userService: UserService,
+  ) {}
 
-  @Command("test")
-  async hi(@Sender() user: TelegramMessageFromUser) {
-    // const from = ctx.from as TelegramMessageFromUser;
+  @Start()
+  async start(@Sender() sender: TelegramMessageSender) {
+    this.logger.log(
+      `User with id:${sender.id}, username:${sender.username}, name:${sender.first_name} ${sender.last_name || ""} started bot`,
+    );
 
-    console.log(user.id);
+    const user = await this.userService.findUser(sender.id);
 
-    // this.logger.log(`Message from ${from.username}: ${ctx}`);
+    if (user) {
+      this.botService.sendMessage(sender.id, locale.start.user_exists);
+      return;
+    }
 
-    // ctx.reply("Hi!");
-  }
+    const newUser = await this.userService.registerUser(sender);
 
-  getHello(): string {
-    return "Hello World!";
+    if (!newUser) {
+      this.botService.sendMessage(sender.id, locale.error);
+
+      return;
+    }
+
+    this.botService.sendMessage(sender.id, locale.start.user_registered);
   }
 }

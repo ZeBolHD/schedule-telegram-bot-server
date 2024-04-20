@@ -10,7 +10,7 @@ export class BotService {
     @InjectBot("ScheduleBot") private readonly bot: Telegraf,
   ) {}
 
-  sendMessage() {
-    this.bot.telegram.sendMessage(721618175, "test");
-  }
+  sendMessage = this.bot.telegram.sendMessage.bind(
+    this.bot.telegram,
+  ) as typeof this.bot.telegram.sendMessage;
 }
