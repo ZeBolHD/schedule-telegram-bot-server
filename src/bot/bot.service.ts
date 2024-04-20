@@ -13,4 +13,8 @@ export class BotService {
   sendMessage = this.bot.telegram.sendMessage.bind(
     this.bot.telegram,
   ) as typeof this.bot.telegram.sendMessage;
+
+  editMessage = this.bot.telegram.editMessageText.bind(
+    this.bot.telegram,
+  ) as typeof this.bot.telegram.editMessageText;
 }
