@@ -8,10 +8,10 @@ datasource db {
 }
 
 model TelegramUser {
-  id         String   @id @unique
-  first_name String?
-  username   String?
-  createdAt  DateTime @default(now())
+  id        String   @id @unique
+  firstName String?  @map("first_name")
+  username  String?
+  createdAt DateTime @default(now()) @map("created_at")
 
   userWithGroup        UserWithGroup[]
   userWithSubscription UserWithSubscription[]
@@ -20,7 +20,7 @@ model TelegramUser {
 }
 
 model UserWithGroup {
-  userId  String
+  userId  String       @map("user_id")
   user    TelegramUser @relation(fields: [userId], references: [id])
   groupId Int
   group   Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
@@ -32,10 +32,10 @@ model UserWithGroup {
 model Group {
   id        Int     @id @unique @default(autoincrement())
   code      String  @unique
-  facultyId Int
+  facultyId Int     @map("faculty_id")
   faculty   Faculty @relation(fields: [facultyId], references: [id])
   grade     Int     @default(1)
-  studyType Int     @default(0)
+  studyType Int     @default(0) @map("study_type")
   fileId    String?
 
   userWithGroup UserWithGroup[]
@@ -44,9 +44,9 @@ model Group {
 }
 
 model UserWithSubscription {
-  userId         String
+  userId         String       @map("user_id")
   user           TelegramUser @relation(fields: [userId], references: [id], onDelete: Cascade)
-  subscriptionId Int
+  subscriptionId Int          @map("subscription_id")
 
   @@id([userId, subscriptionId])
   @@map("user_with_subscription")
@@ -61,10 +61,10 @@ model Faculty {
 }
 
 model User {
-  id             String   @id @default(cuid())
-  name           String   @unique
-  hashedPassword String
-  createdAt      DateTime @default(now())
+  id        String   @id @default(cuid())
+  name      String   @unique
+  password  String   @map("password")
+  createdAt DateTime @default(now())
 
   @@map("users")
 }
