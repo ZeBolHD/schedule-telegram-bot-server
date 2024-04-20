@@ -1,13 +1,15 @@
 import { Module } from "@nestjs/common";
-import { AppService } from "./app.service";
+import { session } from "telegraf";
 import { TelegrafModule } from "nestjs-telegraf";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
 import { PrismaModule } from "@/prisma/prisma.module";
 import { BotModule } from "@/bot/bot.module";
 import { UserModule } from "@/user/user.module";
-import { GroupsModule } from "./groups/groups.module";
-import { session } from "telegraf";
+import { GroupsModule } from "@/groups/groups.module";
+import { SubscriptionModule } from "@/subscription/subscription.module";
+
+import { AppController } from "./app.controller";
 
 @Module({
   imports: [
@@ -24,7 +26,8 @@ import { session } from "telegraf";
     BotModule,
     UserModule,
     GroupsModule,
+    SubscriptionModule,
   ],
-  providers: [AppService],
+  providers: [AppController],
 })
 export class AppModule {}

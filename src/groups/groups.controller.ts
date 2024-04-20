@@ -6,6 +6,7 @@ import { CallbackQuery } from "telegraf/typings/core/types/typegram";
 import { GroupsService } from "./groups.service";
 
 import * as locales from "@/assets/locale.json";
+import { getParamFromCallbackQuery } from "@/lib";
 
 @Injectable()
 @Update()
@@ -85,9 +86,9 @@ export class GroupsController {
   @Action(/select_group.faculty.*.grade.*.group.*/)
   async selectGroup(@Ctx() context: Context) {
     const data = (context.callbackQuery as CallbackQuery.DataQuery).data;
-    const groupId = Number(this.getParamFromCallbackQuery(data, "group"));
-    const facultyId = Number(this.getParamFromCallbackQuery(data, "faculty"));
-    const grade = Number(this.getParamFromCallbackQuery(data, "grade"));
+    const groupId = Number(getParamFromCallbackQuery(data, "group"));
+    const facultyId = Number(getParamFromCallbackQuery(data, "faculty"));
+    const grade = Number(getParamFromCallbackQuery(data, "grade"));
 
     this.logger.log(
       `Received action select_group.faculty.${facultyId}.grade.${grade}.group.${groupId} from user with id:${context.from.id}`,
@@ -111,8 +112,8 @@ export class GroupsController {
   @Action(/select_group.faculty.*.grade.*/)
   async showGroups(@Ctx() context: Context) {
     const data = (context.callbackQuery as CallbackQuery.DataQuery).data;
-    const facultyId = Number(this.getParamFromCallbackQuery(data, "faculty"));
-    const grade = Number(this.getParamFromCallbackQuery(data, "grade"));
+    const facultyId = Number(getParamFromCallbackQuery(data, "faculty"));
+    const grade = Number(getParamFromCallbackQuery(data, "grade"));
 
     this.logger.log(
       `Received action select_group.${facultyId}.grade.${grade} from user with id:${context.from.id}`,
@@ -147,7 +148,7 @@ export class GroupsController {
   @Action(/select_group.faculty.*/)
   async showGrades(@Ctx() context: Context) {
     const data = (context.callbackQuery as CallbackQuery.DataQuery).data;
-    const facultyId = Number(this.getParamFromCallbackQuery(data, "faculty"));
+    const facultyId = Number(getParamFromCallbackQuery(data, "faculty"));
 
     this.logger.log(
       `Received action select_group.faculty.${facultyId} from user with id:${context.from.id}`,
@@ -182,7 +183,7 @@ export class GroupsController {
   @Action(/delete_group.*/)
   async deleteGroup(@Ctx() context: Context) {
     const data = (context.callbackQuery as CallbackQuery.DataQuery).data;
-    const groupId = Number(this.getParamFromCallbackQuery(data, "group"));
+    const groupId = Number(getParamFromCallbackQuery(data, "group"));
 
     this.logger.log(
       `Received action delete_group.group.${groupId} from user with id:${context.from.id}`,
@@ -191,10 +192,5 @@ export class GroupsController {
     await this.groupsService.deleteUserWithGroup(context.from.id, groupId);
 
     this.myGroups(context.msgId, context.from.id);
-  }
-
-  private getParamFromCallbackQuery(data: string, param: string) {
-    const splittedData = data.split(".");
-    return splittedData[splittedData.indexOf(param) + 1];
   }
 }
