@@ -41,7 +41,7 @@ export class GroupsController {
               [
                 {
                   text: locales.get_schedule.get,
-                  callback_data: "/get_schedule",
+                  callback_data: "get_schedule",
                 },
               ],
             ]),

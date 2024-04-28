@@ -10,6 +10,7 @@ import { GroupsModule } from "@/groups/groups.module";
 import { SubscriptionModule } from "@/subscription/subscription.module";
 
 import { AppController } from "./app.controller";
+import { ScheduleModule } from "./schedule/schedule.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AppController } from "./app.controller";
     UserModule,
     GroupsModule,
     SubscriptionModule,
+    ScheduleModule,
   ],
   providers: [AppController],
 })
