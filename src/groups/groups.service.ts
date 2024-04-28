@@ -1,16 +1,12 @@
-import { BotService } from "@/bot/bot.service";
 import { PrismaService } from "@/prisma/prisma.service";
 import { Injectable, Logger } from "@nestjs/common";
-import { UserWithGroup } from "@prisma/client";
+import { Group, UserWithGroup } from "@prisma/client";
 
 @Injectable()
 export class GroupsService {
   private readonly logger = new Logger(GroupsService.name);
 
-  constructor(
-    private readonly botService: BotService,
-    private readonly prismaService: PrismaService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async getFaculties() {
     this.logger.log("Finding all faculties");
@@ -27,7 +23,7 @@ export class GroupsService {
 
   async getGrades(facultyId: number) {
     this.logger.log(`Finding all grades by facultyId:${facultyId}`);
-    const grades = await this.prismaService.group
+    const groups = await this.prismaService.group
       .findMany({
         where: { facultyId },
         distinct: ["grade"],
@@ -40,7 +36,7 @@ export class GroupsService {
         return [];
       });
 
-    const uniqueGrades = Array.from(new Set(grades.map((grade) => grade.grade))).sort(
+    const uniqueGrades = Array.from(new Set(groups.map((grade: Group) => grade.grade))).sort(
       (a, b) => a - b,
     );
 

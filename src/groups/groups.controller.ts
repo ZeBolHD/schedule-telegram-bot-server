@@ -40,8 +40,8 @@ export class GroupsController {
             .concat([
               [
                 {
-                  text: "Получить расписание",
-                  callback_data: "get_schedule",
+                  text: locales.get_schedule.get,
+                  callback_data: "/get_schedule",
                 },
               ],
             ]),
