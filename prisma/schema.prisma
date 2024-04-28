@@ -8,11 +8,10 @@ datasource db {
 }
 
 model TelegramUser {
-  id        String   @id @unique
-  firstName String?  @map("first_name")
-  username  String?
-  createdAt DateTime @default(now()) @map("created_at")
-
+  id                   String                 @id @unique
+  firstName            String?                @map("first_name")
+  username             String?
+  createdAt            DateTime               @default(now()) @map("created_at")
   userWithGroup        UserWithGroup[]
   userWithSubscription UserWithSubscription[]
 
@@ -21,23 +20,22 @@ model TelegramUser {
 
 model UserWithGroup {
   userId  String       @map("user_id")
-  user    TelegramUser @relation(fields: [userId], references: [id])
-  groupId Int
+  groupId Int          @map("group_id")
   group   Group        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user    TelegramUser @relation(fields: [userId], references: [id])
 
   @@id([userId, groupId])
   @@map("user_with_group")
 }
 
 model Group {
-  id        Int     @id @unique @default(autoincrement())
-  code      String  @unique
-  facultyId Int     @map("faculty_id")
-  faculty   Faculty @relation(fields: [facultyId], references: [id])
-  grade     Int     @default(1)
-  studyType Int     @default(0) @map("study_type")
-  fileId    String? @map("file_id")
-
+  id            Int             @id @unique @default(autoincrement())
+  code          String          @unique
+  facultyId     Int             @map("faculty_id")
+  grade         Int             @default(1)
+  studyType     Int             @default(0) @map("study_type")
+  fileId        String?         @map("file_id")
+  faculty       Faculty         @relation(fields: [facultyId], references: [id])
   userWithGroup UserWithGroup[]
 
   @@map("groups")
@@ -45,8 +43,8 @@ model Group {
 
 model UserWithSubscription {
   userId         String       @map("user_id")
-  user           TelegramUser @relation(fields: [userId], references: [id], onDelete: Cascade)
   subscriptionId Int          @map("subscription_id")
+  user           TelegramUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, subscriptionId])
   @@map("user_with_subscription")
@@ -64,7 +62,7 @@ model User {
   id        String   @id @default(cuid())
   name      String   @unique
   password  String   @map("password")
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@map("users")
 }
